@@ -9,12 +9,15 @@ pub fn part1() -> u32 {
 }
 
 pub fn part2() -> i32 {
+    let (list1, list2) = read_into_ids();
+    let similarity_score = calc_similarity_score(list1, list2);
+    similarity_score
+}
+
+fn read_into_ids() -> (Vec<i32>, Vec<i32>) {
     let data = fs::read_to_string("data/day-1-1.txt").unwrap();
     let (mut list1, mut list2) = split_lists(&data);
-    let l1 = to_i32_vec(&mut list1);
-    let l2 = to_i32_vec(&mut list2);
-    let similarity_score = calc_similarity_score(l1, l2);
-    similarity_score
+    (to_i32_vec(list1), to_i32_vec(list2))
 }
 
 fn split_lists(data: &String) -> (Vec<&str>, Vec<&str>) {
@@ -41,7 +44,7 @@ fn calc_diffs(list1: &mut Vec<&str>, list2: &mut Vec<&str>) -> u32 {
     diffs.sum()
 }
 
-fn to_i32_vec(vec: &mut Vec<&str>) -> Vec<i32> {
+fn to_i32_vec(vec: Vec<&str>) -> Vec<i32> {
     vec.iter().map(|s| s.parse::<i32>().unwrap()).collect_vec()
 }
 
@@ -73,8 +76,8 @@ mod tests {
         let mut list1 = vec!["3", "4", "2", "1", "3", "3"];
         let mut list2 = vec!["4", "3", "5", "3", "9", "3"];
 
-        let l1 = to_i32_vec(&mut list1);
-        let l2 = to_i32_vec(&mut list2);
+        let l1 = to_i32_vec(list1);
+        let l2 = to_i32_vec(list2);
         let similarity_score = calc_similarity_score(l1, l2);
         assert_eq!(similarity_score, 31);
     }
