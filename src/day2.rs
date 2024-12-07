@@ -7,9 +7,15 @@ pub(crate) fn part1() -> usize {
     safe_count
 }
 
-// pub(crate) fn part2() -> usize {
-//     count_safe_reports()
-// }
+pub(crate) fn part2() -> usize {
+    let reports = read_reports();
+    let (safe, not_safe): (Vec<_>, Vec<_>) = reports.into_iter().partition(|r| is_safe(r.to_vec()));
+    let dampened_safe = not_safe
+        .into_iter()
+        .filter(|r| safe_with_dampener(r.to_vec()));
+
+    safe.iter().count() + dampened_safe.count()
+}
 
 fn read_reports() -> Vec<Vec<i32>> {
     let data = fs::read_to_string("data/day-2-1.txt").unwrap();
@@ -31,11 +37,10 @@ fn safe_with_dampener(report: Vec<i32>) -> bool {
     let mut dampened_reports = report
         .iter()
         .enumerate()
-        .map(|(i, val)| report.iter().take(i + 1).chain(report.iter().skip(i + 2)));
+        .map(|(i, val)| report.iter().take(i).chain(report.iter().skip(i + 1)));
     for dampened_report in dampened_reports {
-        let report_values = dampened_report.collect_vec();
-        let diffs = report_values.windows(2).map(|w| w[0] - w[1]);
-        if diff_seq_is_safe(diffs) {
+        let report_values = dampened_report.cloned().collect_vec();
+        if is_safe(report_values) {
             return true;
         }
     }
@@ -77,7 +82,7 @@ mod tests {
 
         let reports = read_reports();
         let safe_count = reports.into_iter().filter(|r| is_safe(r.to_vec())).count();
-        assert_eq!(safe_count, 2);
+        assert_eq!(safe_count, 585);
     }
 
     #[test]
