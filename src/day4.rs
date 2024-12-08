@@ -129,7 +129,7 @@ mod tests {
     use std::fs;
 
     #[test]
-    fn test() {
+    fn test_part1() {
         let raw_bytes = fs::read("data/day-4-1.txt").unwrap();
         let mut data = bytes_to_grid(&raw_bytes);
         let count = calc(&mut data);
